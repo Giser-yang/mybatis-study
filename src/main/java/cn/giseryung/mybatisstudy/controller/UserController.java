@@ -1,53 +1,95 @@
 package cn.giseryung.mybatisstudy.controller;
 
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
+import cn.giseryung.mybatisstudy.entity.dto.UserDTO;
+import cn.giseryung.mybatisstudy.entity.po.User;
+import cn.giseryung.mybatisstudy.entity.query.UserQuery;
+import cn.giseryung.mybatisstudy.entity.vo.UserVO;
 import cn.giseryung.mybatisstudy.pojo.Result;
-import cn.giseryung.mybatisstudy.pojo.User;
-import cn.giseryung.mybatisstudy.pojodto.UserFormDto;
 import cn.giseryung.mybatisstudy.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.annotation.Resource;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Delete;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.List;
-@Tag(name = "用户管理")
+import java.util.Map;
+
+@Tag(name = "用户", description = "用户管理")
 @RestController
 @RequestMapping("/user")
 //@AllArgsConstructor
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    ModelMapper modelMapper = new ModelMapper();
 
-    @Operation(summary = "新增用户")
-    @PostMapping
-    public Result saveUser(@RequestBody UserFormDto userFormDto) {
-        //1、把userFormDto拷贝到user
-        System.out.println(userFormDto);
-        User user = new User();
-        BeanUtils.copyProperties(userFormDto,user);
-        System.out.println(user);
-        //2、新增
+    @PostMapping("register")
+    @Operation(summary = "用户注册")
+    public Result register(@RequestBody UserDTO userDTO) {
+        //1 把dto拷贝到po
+        //验证用户名是否存在
+        User user = modelMapper.map(userDTO, User.class);
+        //2 新增
         userService.save(user);
-        return Result.success();
+        return Result.success(Map.of("userId", user.getId()));
     }
-    @DeleteMapping("/{id}")
-    public Result deleteUserById(@PathVariable("id") Integer id){
+
+    @DeleteMapping("/delete/{id}")
+    @Operation(summary = "用户删除")
+    public Result delete(@PathVariable("id") Long id) {
         userService.removeById(id);
         return Result.success();
     }
-//
-//    @GetMapping
-//    public Result<List<User>>
-//    @PutMapping
-//    public Result updateUser(@RequestBody UserFormDto userFormDto){
-//
-////        userService.updateById()
+
+    //    @GetMapping("/{id}")
+//    @Operation(summary = "用户查询")
+//    public Result<UserDTO> search(@PathVariable("id") Long id){
+//        User user =  userService.getById(id);
+//        UserDTO userDTO = modelMapper.map(user,UserDTO.class);
+//        return Result.success(userDTO);
 //    }
+    @GetMapping("/{id}")
+    @Operation(summary = "用户查询")
+    public Result<UserVO> search(@PathVariable("id") Long id) {
+        UserVO UserVO = userService.queryUserAndAddressById(id);
+        return Result.success(UserVO);
+    }
+
+    @GetMapping()
+    @Operation(summary = "用户批量查询")
+    @Parameter(name = "ids",description = "用户id集合",example = "1,2,3")
+    public Result<List<UserDTO>> search(@RequestParam("ids") List<Long> ids) {
+        List<User> userList = userService.listByIds(ids);
+        Type listType = new TypeToken<List<UserDTO>>() {
+        }.getType();
+        List<UserDTO> userDTOList = modelMapper.map(userList, listType);
+        return Result.success(userDTOList);
+    }
+
+    @PutMapping("/{id}/deduction/{money}")
+    @Operation(summary = "根据用户id扣减余额")
+    public Result<UserDTO> deductMoneyById(@PathVariable("id") Long id, @PathVariable("money") Integer money) {
+        userService.deductMoneyById(id, money);
+        User user = userService.getById(id);
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        return Result.success(userDTO);
+    }
+
+    @GetMapping("/list")
+    @Operation(summary = "用户筛选")
+    public Result<List<UserDTO>> list(@ParameterObject UserQuery userQuery) {
+        List<User> userList = userService.queryUsers(userQuery.getName(), userQuery.getStatus(),
+                userQuery.getMinBalance(), userQuery.getMaxBalance());
+        Type listType = new TypeToken<List<UserDTO>>() {
+        }.getType();
+        List<UserDTO> userDTOList = modelMapper.map(userList, listType);
+        return Result.success(userDTOList);
+    }
 }

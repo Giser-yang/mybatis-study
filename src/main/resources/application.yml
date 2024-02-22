@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/shp_test?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=round&tinyInt1isBit=false&useSSL=false
+    url: jdbc:postgresql://localhost:5432/shp_test?currentSchema=public&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=round&tinyInt1isBit=false&useSSL=false
     username: postgres
     password: jskj@2020
     driver-class-name: org.postgresql.Driver
@@ -26,6 +26,7 @@ mybatis-plus:
   mapper-locations: classpath*:cn/giseryung/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
 #    lazy-loading-enabled: false
 #    multiple-result-sets-enabled: true
 #    use-column-label: true
@@ -41,10 +42,12 @@ springdoc:
     operations-sorter: alpha
   api-docs:
     path: /v3/api-docs
+    enabled: true
   group-configs:
     - group: 'default'
       paths-to-match: '/**'
       packages-to-scan: com.xiaominfo.knife4j.demo.web
+  packages-to-scan: cn.giseryung.mybatisstudy.controller
 # knife4j的增强配置，不需要增强可以不配
 knife4j:
   enable: true
@@ -53,3 +56,4 @@ knife4j:
   basic:
     username: yt
     password: 123
+
