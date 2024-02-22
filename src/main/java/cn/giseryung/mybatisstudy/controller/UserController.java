@@ -38,15 +38,7 @@ public class UserController {
     public Result register(@RequestBody UserDTO userDTO) {
         //1 把dto拷贝到po
         System.out.println(userDTO.getInfo());
-        UserInfo info = userDTO.getInfo();
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            String jsonString = objectMapper.writeValueAsString(info);
-            System.out.println(jsonString);
-        } catch (JsonProcessingException e) {
-            throw  new RuntimeException("info参数错误");
-        }
-        //验证用户名是否存在
+        //验证用户名是否存在 待完成！！！
         User user = modelMapper.map(userDTO, User.class);
         //2 新增
         userService.save(user);
