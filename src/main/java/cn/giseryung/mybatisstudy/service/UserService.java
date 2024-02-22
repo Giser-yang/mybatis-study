@@ -1,14 +1,16 @@
 package cn.giseryung.mybatisstudy.service;
 
-import cn.giseryung.mybatisstudy.pojo.User;
+import cn.giseryung.mybatisstudy.entity.po.User;
+import cn.giseryung.mybatisstudy.entity.vo.UserVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
 public interface UserService extends IService<User> {
-    void add(User user);
 
-    List<User> getUserByIds(List<Long> ids);
+    void deductMoneyById(Long id, Integer money);
 
-    void addTime(Integer seconds);
+    List<User> queryUsers(String name, Integer status, Integer minBalance, Integer maxBalance);
+
+    UserVO queryUserAndAddressById(Long id);
 }
