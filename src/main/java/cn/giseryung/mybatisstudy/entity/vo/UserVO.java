@@ -9,21 +9,21 @@ import java.util.List;
 @Schema(description = "用户VO实体")
 @Data
 public class UserVO {
-    @Schema(name = "用户id",type = "long")
+    @Schema(name = "id",description = "用户id",type = "long")
     private Long id;
 
-    @Schema(name = "用户名",type = "string")
+    @Schema(name = "username",description = "用户名",type = "string")
     private String username;
 
-    @Schema(name = "详细信息",type ="string" )
+    @Schema(name = "info",description = "详细信息",type ="string" )
     private UserInfo info;
 
-    @Schema(name = "使用状态（1正常 2冻结）")
+    @Schema(name = "status",description = "使用状态（1正常 2冻结）")
     private UserStatus status;
 
-    @Schema(name = "账户余额")
+    @Schema(name = "balance",description = "账户余额")
     private Integer balance;
 
-    @Schema(name = "用户的收获地址")
+    @Schema(name = "addresses",description = "用户的收获地址")
     private List<AddressVO> addresses;
 }

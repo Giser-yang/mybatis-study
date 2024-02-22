@@ -5,11 +5,11 @@ import cn.giseryung.mybatisstudy.entity.po.Address;
 import cn.giseryung.mybatisstudy.entity.po.User;
 import cn.giseryung.mybatisstudy.entity.vo.AddressVO;
 import cn.giseryung.mybatisstudy.entity.vo.UserVO;
+import cn.giseryung.mybatisstudy.enums.UserStatus;
 import cn.giseryung.mybatisstudy.mapper.UserMapper;
 import cn.giseryung.mybatisstudy.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
-import com.google.common.reflect.TypeToken;
 import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -28,7 +28,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //查询用户
         User user = getById(id);
         //校验用户状态
-        if (user == null || user.getStatus() == 2) {
+        if (user == null || user.getStatus() == UserStatus.FROZEN) {
             throw new RuntimeException("用户状态异常！");
         }
         //检验余额是否充足
@@ -40,7 +40,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         int remainBalance = user.getBalance() - money;
         lambdaUpdate()
                 .set(User::getBalance, remainBalance)
-                .set(remainBalance == 0, User::getStatus, 2)
+                .set(remainBalance == 0, User::getStatus, UserStatus.FROZEN)
                 .eq(User::getId, id)
                 //乐观锁
                 .eq(User::getBalance, user.getBalance())
@@ -53,6 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .eq(status != null, User::getStatus, status)
                 .ge(minBalance != null, User::getBalance, minBalance)
                 .le(maxBalance != null, User::getBalance, maxBalance)
+                .orderByAsc(User::getId)
                 .list();
     }
 
@@ -60,7 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public UserVO queryUserAndAddressById(Long id) {
         //1 查询用户
         User user = getById(id);
-        if (user == null || user.getStatus() == 2) {
+        if (user == null || user.getStatus() == UserStatus.FROZEN) {
             throw new RuntimeException("用户状态异常");
         }
         // 2 查询地址

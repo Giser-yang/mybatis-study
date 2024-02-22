@@ -1,8 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/shp_test?currentSchema=public&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=round&tinyInt1isBit=false&useSSL=false
+    url: jdbc:postgresql://localhost:5432/shp_test?currentSchema=public&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=round&tinyInt1isBit=false&useSSL=false&stringtype=unspecified
     username: postgres
-    password: jskj@2020
+#    password: jskj@2020
+    password: yt123456
     driver-class-name: org.postgresql.Driver
 #mybatis:
 #  configuration:
