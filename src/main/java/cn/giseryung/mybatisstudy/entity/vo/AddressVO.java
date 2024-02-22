@@ -7,33 +7,33 @@ import lombok.Data;
 @Data
 public class AddressVO {
 
-    @Schema(name = "id")
+    @Schema(name = "id",description = "id")
     private Long id;
 
-    @Schema(name = "用户ID")
+    @Schema(name = "userId",description = "用户ID")
     private Long userId;
 
-    @Schema(name = "省")
+    @Schema(name = "province",description = "省")
     private String province;
 
-    @Schema(name = "市")
+    @Schema(name = "city",description = "市")
     private String city;
 
-    @Schema(name = "县/区")
+    @Schema(name = "town",description = "县/区")
     private String town;
 
-    @Schema(name = "手机")
+    @Schema(name = "mobile",description = "手机")
     private String mobile;
 
-    @Schema(name = "详细地址")
+    @Schema(name = "street",description = "详细地址")
     private String street;
 
-    @Schema(name = "联系人")
+    @Schema(name = "contact",description = "联系人")
     private String contact;
 
-    @Schema(name = "是否是默认 1默认 0否")
+    @Schema(name = "isDefault",description = "是否是默认 1默认 0否")
     private Boolean isDefault;
 
-    @Schema(name = "备注")
+    @Schema(name = "notes",description = "备注")
     private String notes;
 }
