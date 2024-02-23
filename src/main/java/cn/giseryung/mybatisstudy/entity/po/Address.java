@@ -62,7 +62,6 @@ public class Address {
      * 是否是默认 1默认 0否
      */
     private Boolean isDefault;
-
     /**
      * 备注
      */

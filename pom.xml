@@ -49,16 +49,16 @@
             <version>4.13.1</version>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.geotools</groupId>-->
-<!--            <artifactId>gt-shapefile</artifactId>-->
-<!--            <version>${geotools.version}</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.geotools</groupId>-->
-<!--            <artifactId>gt-swing</artifactId>-->
-<!--            <version>${geotools.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-shapefile</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-swing</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -114,7 +114,21 @@
 <!--            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>-->
 <!--            <version>3.5.0</version>-->
 <!--        </dependency>-->
-
+        <!-- Logback日志 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+        <!--AOP拦截请求日志信息-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.21</version>
+        </dependency>
     </dependencies>
 
     <build>
