@@ -2,8 +2,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/shp_test?currentSchema=public&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=round&tinyInt1isBit=false&useSSL=false&stringtype=unspecified
     username: postgres
-#    password: jskj@2020
-    password: yt123456
+    password: jskj@2020
+#    password: yt123456
     driver-class-name: org.postgresql.Driver
 #mybatis:
 #  configuration:
@@ -58,3 +58,9 @@ knife4j:
     username: yt
     password: 123
 
+# 分页
+pagehelper:
+#  propertyName: propertyValue
+  reasonable: true # 启用合理化，如果pageNum<1会查询第一页，如果pageNum>pages会查询最后一页
+  defaultCount: true # 分页插件默认参数支持 default-count 形式，自定义扩展的参数，必须大小写一致
+#  page-size-zero: true  # pageSize=0 查询出全部的结果

@@ -1,8 +1,10 @@
 package cn.giseryung.mybatisstudy.controller;
 
+import cn.giseryung.mybatisstudy.entity.dto.PageDTO;
 import cn.giseryung.mybatisstudy.entity.dto.UserDTO;
 import cn.giseryung.mybatisstudy.entity.po.User;
 import cn.giseryung.mybatisstudy.entity.po.UserInfo;
+import cn.giseryung.mybatisstudy.entity.query.PageQuery;
 import cn.giseryung.mybatisstudy.entity.query.UserQuery;
 import cn.giseryung.mybatisstudy.entity.vo.UserVO;
 import cn.giseryung.mybatisstudy.pojo.Result;
@@ -10,6 +12,8 @@ import cn.giseryung.mybatisstudy.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -37,7 +41,6 @@ public class UserController {
     @Operation(summary = "用户注册")
     public Result register(@RequestBody UserDTO userDTO) {
         //1 把dto拷贝到po
-        System.out.println(userDTO.getInfo());
         //验证用户名是否存在 待完成！！！
         User user = modelMapper.map(userDTO, User.class);
         //2 新增
@@ -68,7 +71,7 @@ public class UserController {
 
     @GetMapping()
     @Operation(summary = "用户批量查询")
-    @Parameter(name = "ids",description = "用户id集合",example = "1,2,3")
+    @Parameter(name = "ids", description = "用户id集合", example = "1,2,3")
     public Result<List<UserVO>> search(@RequestParam("ids") List<Long> ids) {
         List<User> userList = userService.listByIds(ids);
         Type listType = new TypeToken<List<UserVO>>() {
@@ -88,12 +91,22 @@ public class UserController {
 
     @GetMapping("/list")
     @Operation(summary = "用户筛选")
-    public Result<List<UserVO>> list(@ParameterObject UserQuery userQuery) {
+    public Result<PageDTO<UserVO>> list(@ParameterObject UserQuery userQuery) {
+        // 分页及排序条件初始化
+        userQuery.toMapPage();
         List<User> userList = userService.queryUsers(userQuery.getName(), userQuery.getStatus(),
                 userQuery.getMinBalance(), userQuery.getMaxBalance());
-        Type listType = new TypeToken<List<UserVO>>() {
-        }.getType();
-        List<UserVO> userVOList = modelMapper.map(userList, listType);
-        return Result.success(userVOList);
+        // 分页
+        PageInfo<User> pageInfo = new PageInfo<>(userList);
+        // po 转 vo
+        Type listType = new TypeToken<List<UserVO>>() {}.getType();
+        List<UserVO> userVOList = modelMapper.map(pageInfo.getList(), listType);
+        // 封装PageDTO
+        PageDTO<UserVO> pageDTO = new PageDTO<>();
+        pageDTO.setPages(pageInfo.getPages());
+        pageDTO.setTotal(pageInfo.getTotal());
+        pageDTO.setList(userVOList);
+        return Result.success(pageDTO);
     }
+
 }
