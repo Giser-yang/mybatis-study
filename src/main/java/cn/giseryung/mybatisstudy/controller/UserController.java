@@ -2,11 +2,14 @@ package cn.giseryung.mybatisstudy.controller;
 
 import cn.giseryung.mybatisstudy.entity.dto.UserDTO;
 import cn.giseryung.mybatisstudy.entity.po.User;
+import cn.giseryung.mybatisstudy.entity.po.UserInfo;
 import cn.giseryung.mybatisstudy.entity.query.UserQuery;
 import cn.giseryung.mybatisstudy.entity.vo.UserVO;
 import cn.giseryung.mybatisstudy.pojo.Result;
 import cn.giseryung.mybatisstudy.service.UserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -34,7 +37,8 @@ public class UserController {
     @Operation(summary = "用户注册")
     public Result register(@RequestBody UserDTO userDTO) {
         //1 把dto拷贝到po
-        //验证用户名是否存在
+        System.out.println(userDTO.getInfo());
+        //验证用户名是否存在 待完成！！！
         User user = modelMapper.map(userDTO, User.class);
         //2 新增
         userService.save(user);
@@ -65,31 +69,31 @@ public class UserController {
     @GetMapping()
     @Operation(summary = "用户批量查询")
     @Parameter(name = "ids",description = "用户id集合",example = "1,2,3")
-    public Result<List<UserDTO>> search(@RequestParam("ids") List<Long> ids) {
+    public Result<List<UserVO>> search(@RequestParam("ids") List<Long> ids) {
         List<User> userList = userService.listByIds(ids);
-        Type listType = new TypeToken<List<UserDTO>>() {
+        Type listType = new TypeToken<List<UserVO>>() {
         }.getType();
-        List<UserDTO> userDTOList = modelMapper.map(userList, listType);
-        return Result.success(userDTOList);
+        List<UserVO> userVOList = modelMapper.map(userList, listType);
+        return Result.success(userVOList);
     }
 
     @PutMapping("/{id}/deduction/{money}")
     @Operation(summary = "根据用户id扣减余额")
-    public Result<UserDTO> deductMoneyById(@PathVariable("id") Long id, @PathVariable("money") Integer money) {
+    public Result<UserVO> deductMoneyById(@PathVariable("id") Long id, @PathVariable("money") Integer money) {
         userService.deductMoneyById(id, money);
         User user = userService.getById(id);
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        return Result.success(userDTO);
+        UserVO userVO = modelMapper.map(user, UserVO.class);
+        return Result.success(userVO);
     }
 
     @GetMapping("/list")
     @Operation(summary = "用户筛选")
-    public Result<List<UserDTO>> list(@ParameterObject UserQuery userQuery) {
+    public Result<List<UserVO>> list(@ParameterObject UserQuery userQuery) {
         List<User> userList = userService.queryUsers(userQuery.getName(), userQuery.getStatus(),
                 userQuery.getMinBalance(), userQuery.getMaxBalance());
-        Type listType = new TypeToken<List<UserDTO>>() {
+        Type listType = new TypeToken<List<UserVO>>() {
         }.getType();
-        List<UserDTO> userDTOList = modelMapper.map(userList, listType);
-        return Result.success(userDTOList);
+        List<UserVO> userVOList = modelMapper.map(userList, listType);
+        return Result.success(userVOList);
     }
 }

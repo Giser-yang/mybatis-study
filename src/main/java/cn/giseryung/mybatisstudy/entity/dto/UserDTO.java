@@ -1,5 +1,9 @@
 package cn.giseryung.mybatisstudy.entity.dto;
 
+import cn.giseryung.mybatisstudy.entity.po.UserInfo;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -20,8 +24,8 @@ public class UserDTO {
     @Schema(name = "phone",description = "注册手机号",defaultValue = "17760485080")
     private String phone;
 
-    @Schema(name = "info",description = "详细信息，JSON风格",defaultValue =  "{\"number\":\"1\"}")
-    private String info;
+    @Schema(name = "info",description = "详细信息，JSON风格") //defaultValue =  UserInfo.of(18,"疯魔少年","男")
+    private UserInfo info;
 
     @Schema(name = "balance",description = "账户余额",defaultValue = "400")
     private Integer balance;
