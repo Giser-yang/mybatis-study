@@ -1,17 +1,15 @@
 package cn.giseryung.mybatisstudy.service.impl;
 
-import cn.giseryung.mybatisstudy.entity.dto.UserDTO;
 import cn.giseryung.mybatisstudy.entity.po.Address;
 import cn.giseryung.mybatisstudy.entity.po.User;
 import cn.giseryung.mybatisstudy.entity.vo.AddressVO;
 import cn.giseryung.mybatisstudy.entity.vo.UserVO;
 import cn.giseryung.mybatisstudy.enums.UserStatus;
+import cn.giseryung.mybatisstudy.utils.CMSException;
 import cn.giseryung.mybatisstudy.mapper.UserMapper;
 import cn.giseryung.mybatisstudy.service.UserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
-import jakarta.annotation.Resource;
-import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +27,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = getById(id);
         //校验用户状态
         if (user == null || user.getStatus() == UserStatus.FROZEN) {
-            throw new RuntimeException("用户状态异常！");
+            throw CMSException.of("用户状态异常");
         }
         //检验余额是否充足
         if (user.getBalance() < money) {
-            throw new RuntimeException("用户余额不足！");
+            throw CMSException.of("用户余额不足");
         }
         //扣减余额
 //        userMapper.deductMoneyById(id,money);
@@ -62,7 +60,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //1 查询用户
         User user = getById(id);
         if (user == null || user.getStatus() == UserStatus.FROZEN) {
-            throw new RuntimeException("用户状态异常");
+            throw  CMSException.of("用户状态异常");
         }
         // 2 查询地址
         List<Address> addressList = Db.lambdaQuery(Address.class).eq(Address::getUserId, id).list();

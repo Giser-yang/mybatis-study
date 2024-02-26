@@ -40,7 +40,7 @@ public class AopLog {
 
         HttpServletRequest request = Objects.requireNonNull(attributes).getRequest();
 
-
+        log.info("【请求方式】：{}", request.getMethod());
         log.info("【请求 URL】：{}", request.getRequestURL());
         log.info("【请求 IP】：{}", request.getRemoteAddr());
         log.info("【请求类名】：{}，【请求方法名】：{}", point.getSignature().getDeclaringTypeName(), point.getSignature().getName());
